@@ -12,7 +12,10 @@ public class AlarmClock {
 		String alarmTime = scnr.nextLine(); //storing alarmtime as a string
 		
 		//displaying users alarm time
-		System.out.println("Your alarm will ring at " + alarmTime); 
+		System.out.println("Your alarm will ring at " + alarmTime);
+		
+		System.out.println("Hello from chris laptop");
+		
 		
 		scnr.close(); //close scanner avoiding resource leak
 	}
