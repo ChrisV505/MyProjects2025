@@ -1,11 +1,17 @@
 package alarmclock;
 
 import java.util.Scanner;
+import java.time.Clock;
 
 public class AlarmClock {
 
 	public static void main(String[] args) {
 		Scanner scnr = new Scanner(System.in);
+		Clock clock = Clock.systemUTC(); //get current system time
+		
+		java.time.Instant instant = clock.instant();
+		
+		System.out.println(instant);
 		
 		//asking user for time for alarm
 		System.out.print("Please input the time you want the alarm clock (11:29): ");
