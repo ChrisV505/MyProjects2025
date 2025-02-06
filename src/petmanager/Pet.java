@@ -6,30 +6,22 @@ public class Pet {
 	private String type;
 	int hunger = 3; //always set hunger to 3
 	
-	//getter and setter methods
-	public String getName() {
-		return name;
+	public Pet(String name, String type) {
+		this.name = name;
+		this.type = type;
 	}
 	
-	public void setName(String name) {
-		this.name = name;
+	public String getName() {
+		return name;
 	}
 	
 	public String getType() {
 		return type;
 	}
 	
-	public void setType(String type) {
-		this.type = type;
+	public void displayPetDetails() {
+		System.out.println(type + " " + name + " is at " + hunger + "hunger");
 	}
-	
-	void feed() {
-		if(hunger >= 0) {
-			hunger--;
-		}
-	}
-	
-	
 	
 	
 }
