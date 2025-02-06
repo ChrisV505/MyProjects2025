@@ -14,7 +14,7 @@ public class BasicBudgetTrackerV2 {
 	static double finalBalance = 0; //stores balance after subtracting total expense from total income
 	
 	final static int QUARTERS_OF_YEAR = 4; //quarters of a year
-	final static int NUM_TO_CONVERT_PERCENTAGE = 100;
+	final static int NUM_TO_CONVERT_PERCENTAGE = 100; //helps convert percentage to decimal
 	
 	static Scanner scnr = new Scanner(System.in); //scanner for user input
 	
