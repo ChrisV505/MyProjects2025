@@ -23,7 +23,7 @@ public class PetManager {
 					int menuChoice = scnr.nextInt();
 					scnr.nextLine(); // consume new line
 					choiceSwitch(menuChoice, scnr, owner); //call switch to determine user choice
-					if(menuChoice == 5) { //5 is the option to exit out of inner loop
+					if(menuChoice == 5) { //handles exit option from inner loop
 						break;
 					}
 				}
@@ -33,12 +33,15 @@ public class PetManager {
 				} 
 			}
 
-			System.out.print("Do you want to continue this program (yes/no): ");
+			System.out.print("Do you want to start a new owner pet list (yes/no): ");
 			String exitChoice = scnr.nextLine().toLowerCase();
 			if(exitChoice.equals("yes")) {
+				continue;
+			} else {
 				break;
 			}
 		}
+		System.out.println("Goodbte..."); //exit message
 		scnr.close();
 
 	}
@@ -51,29 +54,35 @@ public class PetManager {
 		System.out.println("4. Feed pet");
 		//System.out.println("5. Track health");
 		//System.out.println("Would");
-		System.out.println("5. Exit");
+		System.out.println("5. Exit this owner");
 		System.out.println("----------------");
 		System.out.print("What your choice: ");
 	}
 	
-	static void choiceSwitch(int menuChoice, Scanner scnr, Owner owner) {
+	static void choiceSwitch(int menuChoice, Scanner scnr, Owner owner) {		
+		Pet pet = null;
+		
 		switch(menuChoice) {
-			case 1: 
+			case 1:
 				System.out.print("Please enter your pet name: ");
-				String petName = scnr.nextLine();
+				String petName = scnr.nextLine().toUpperCase();
 				System.out.print("Please enter your pet type (E.g, dog, cat, bird): ");
-				String petType = scnr.nextLine();
-				
-				Pet pet = new Pet(petName, petType);
+				String petType = scnr.nextLine().toUpperCase();
+				pet = new Pet(petName, petType);
 				owner.addPet(pet);
 				break;
 			case 2:
 				System.out.print("Please enter pet name your want to remove: ");
-				String removePetName = scnr.nextLine();
+				String removePetName = scnr.nextLine().toUpperCase();
 				owner.removePet(removePetName);
 				break;
 			case 3:
 				owner.listPets();
+				break;
+			case 4:
+				System.out.print("Please enter pet name you want to feed: ");
+				String feedPetName = scnr.nextLine().toUpperCase();
+				owner.feedingPet(feedPetName);
 				break;
 		}
 	}

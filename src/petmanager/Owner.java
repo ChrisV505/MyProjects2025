@@ -12,6 +12,10 @@ public class Owner {
 		this.name = name;
 		this.pets = new ArrayList<>();
 	}
+	
+	public void getName() {
+		System.out.println(name);
+	}
 
 	public void addPet(Pet pet) {
 		pets.add(pet);
@@ -19,7 +23,7 @@ public class Owner {
 	}
 	
 	public void removePet(String petName) {
-		pets.removeIf(pet -> pet.getName().equalsIgnoreCase(petName));
+		pets.removeIf(pet -> pet.getName().equals(petName));
 	}
 	
 	public void listPets() {
@@ -27,13 +31,29 @@ public class Owner {
 			System.out.println(name + " has no pets");
 		}
 		else {
-			System.out.println(name + " 's pets: ");
+			System.out.println(name + "'s pets: ");
 			for(Pet pet : pets) {
 				pet.displayPetDetails();
 			}
 		}
 	}
 	
+	public Pet getPetByName(String petName) {
+		for(Pet pet : pets) {
+			if(pet.getName().equals(petName)) {
+				return pet;
+			}
+		}
+		return null; //if petName has no matches
+	}
 	
-	
+	public void feedingPet(String petName) {
+	    Pet petToFeed = getPetByName(petName);
+	    if (petToFeed != null) {
+	        petToFeed.feed(); // Call a method in the Pet class to update its feeding status
+	        System.out.println("You fed " + petName);
+	    } else {
+	        System.out.println("Pet with name " + petName + " not found.");
+	    }
+	}
 }
