@@ -1,5 +1,7 @@
 package petmanager;
 
+import javax.swing.JOptionPane;
+
 public class Pet {
 
 	private String name;
@@ -43,12 +45,10 @@ public class Pet {
     // Decrease hunger level over time
     public void hungerDecrease() {
         if (hungerLevel != 0) { 
-        	System.out.println("                                         " + name + " Hunger level: " + hungerLevel);
+        	JOptionPane.showMessageDialog(null, name + " Hunger level: " + hungerLevel, "Hunger Level", JOptionPane.PLAIN_MESSAGE);
             hungerLevel--;
         } else {
-            System.out.println("                                         " + name + " is starving! Feed them quickly! Hunger Level: " + hungerLevel);
+        	JOptionPane.showConfirmDialog(null, name + " is starving! Feed them quickly! Hunger Level: " + hungerLevel, "WARNING!", JOptionPane.WARNING_MESSAGE);
         }
     }
-	
-	
 }
