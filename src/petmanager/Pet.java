@@ -5,7 +5,7 @@ public class Pet {
 	private String name;
 	private String type;
 	int hungerLevel = 3; //always set hunger to 3
-	
+
 	public Pet(String name, String type) {
 		this.name = name;
 		this.type = type;
@@ -26,9 +26,9 @@ public class Pet {
 	public void feed() {
 	    if (hungerLevel < 3) {
 	        hungerLevel++;
-	        System.out.println(this.name + " is now less hungry. Hunger level: " + hungerLevel);
+	        System.out.println(name + " is now less hungry. Hunger level: " + hungerLevel);
 	    } else {
-	        System.out.println(this.name + " is not hungry. Hunger level: " + hungerLevel);
+	        System.out.println(name + " is not hungry. Hunger level: " + hungerLevel);
 	    }
 	}
 	
@@ -39,4 +39,16 @@ public class Pet {
 			System.out.println("Your " + type + " " + name + " is not hungry. Hunger level of " + hungerLevel + "/3");
 		}
 	}
+	
+    // Decrease hunger level over time
+    public void hungerDecrease() {
+        if (hungerLevel != 0) { 
+        	System.out.println("                                         " + name + " Hunger level: " + hungerLevel);
+            hungerLevel--;
+        } else {
+            System.out.println("                                         " + name + " is starving! Feed them quickly! Hunger Level: " + hungerLevel);
+        }
+    }
+	
+	
 }

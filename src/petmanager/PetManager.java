@@ -4,6 +4,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class PetManager {
+
 	public static void main(String[] args) {
 		//PET MANAGER
 		
@@ -16,6 +17,11 @@ public class PetManager {
 			System.out.print("Please enter your name: ");
 			String name = scnr.nextLine();
 			Owner owner = new Owner(name);
+			
+		    MyRunnable myRunnable = new MyRunnable(owner);
+			Thread thread = new Thread(myRunnable);
+			thread.setDaemon(true);
+			thread.start(); //start hunger decreasing timer when Pet is created
 			
 			while(true) {
 				petMenu();
@@ -41,9 +47,8 @@ public class PetManager {
 				break;
 			}
 		}
-		System.out.println("Goodbte..."); //exit message
+		System.out.println("Goodbye..."); //exit message
 		scnr.close();
-
 	}
 	
 	static void petMenu() {
@@ -52,8 +57,6 @@ public class PetManager {
 		System.out.println("2. Remove pet");
 		System.out.println("3. List all pets");
 		System.out.println("4. Feed pet");
-		//System.out.println("5. Track health");
-		//System.out.println("Would");
 		System.out.println("5. Exit this owner");
 		System.out.println("----------------");
 		System.out.print("What your choice: ");

@@ -38,6 +38,10 @@ public class Owner {
 		}
 	}
 	
+	public List<Pet> getPets() {
+	    return pets; // Return the list of pets
+	}
+	
 	public Pet getPetByName(String petName) {
 		for(Pet pet : pets) {
 			if(pet.getName().equals(petName)) {
