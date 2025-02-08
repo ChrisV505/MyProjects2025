@@ -12,7 +12,7 @@ public class MyRunnable implements Runnable {
 	public void run() {
 		while (true) { // Infinite loop to decrease hunger periodically
 			try {
-				Thread.sleep(6000); // Pause for 6 seconds
+				Thread.sleep(60000); // Pause for 6 seconds
 	            synchronized (this) {
 	            	for (Pet pet : owner.getPets()) { // Iterate through pets
 	            		pet.hungerDecrease();
