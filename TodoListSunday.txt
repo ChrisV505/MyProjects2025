@@ -1,5 +1,0 @@
-1: programming - 2 hrs today minimum - true
-2: amazon - 11:45AM - false
-3: sign for class - CS class - false
-4: clean room - at least floor - false
-5: hw - math - true
