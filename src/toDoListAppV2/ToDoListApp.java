@@ -112,7 +112,6 @@ public class ToDoListApp {
 			case 1 -> writeToExistFile(scnr, tasks);
 			case 2 -> writeToNewFile(scnr, tasks);
 			case 3 -> {
-				break;
 			}
 			default -> System.out.println("invalid input. Enter number (1 - 6)"); 
 		}
@@ -185,6 +184,4 @@ public class ToDoListApp {
 			System.out.println("Could not write file");
 		}
 	}
-	
-	
 }
