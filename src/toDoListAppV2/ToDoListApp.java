@@ -1,5 +1,9 @@
 package toDoListAppV2;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
@@ -59,7 +63,7 @@ public class ToDoListApp {
 					case 5 -> {
 						fileMenu();
 						int fileMenuChoice = scnr.nextInt();
-						fileChoice(fileMenuChoice);
+						fileChoice(fileMenuChoice, scnr, tasks);
 					}
 					case 6 -> {
 						System.out.println("exiting program...");
@@ -85,7 +89,7 @@ public class ToDoListApp {
 		System.out.println("2. Remove task");
 		System.out.println("3. List all tasks");
 		System.out.println("4. Mark task as done");
-		System.out.println("5. Save to file");
+		System.out.println("5. Go to file menu");
 		System.out.println("6. Exit");
 		System.out.println("-------------------");
 		System.out.print("Enter your choice: ");
@@ -100,10 +104,10 @@ public class ToDoListApp {
 		System.out.print("Enter your choice: ");
 	}
 	
-	static void fileChoice(int menuChoice) {
+	static void fileChoice(int menuChoice, Scanner scnr, ArrayList<Task> tasks) {
 		switch(menuChoice) {
 			case 1 -> System.out.println("Save to existing file");
-			case 2 -> System.out.println("Create and save new file");
+			case 2 -> writeToNewFile(scnr, tasks);
 			case 3 -> {
 				break;
 			}
@@ -111,6 +115,73 @@ public class ToDoListApp {
 		}
 	}
 	
+	static void writeToNewFile(Scanner scnr, ArrayList<Task> tasks) {
+		scnr.nextLine(); //consume new line
+		System.out.print("Enter name for new file: ");
+		String filePath = scnr.nextLine();
+		
+		if(!filePath.endsWith(".txt")) { //add .txt if not there yet
+			filePath += ".txt";
+		}
+		
+		//create file
+		try {
+			File myFile = new File(filePath); //create file using fileName from user
+			if(myFile.createNewFile()) { //create unique file path
+				System.out.println("\nFile created: " + myFile.getAbsolutePath()); 
+				FileWriter writer = new FileWriter(myFile); //initialize writer for specified filePath
+				for(int i = 0; i < tasks.size(); i++) {
+						Task t = tasks.get(i); //loop to write every task in new line
+						writer.write((i + 1) + ": " + t.getName() + " - " + t.getDescription() + 
+										  " - " + (t.isDone()) + "\n");					  
+				}
+				
+				writer.close(); //close after writing to file
+				System.out.println("Data written to " + filePath);	
+			}
+			else {
+				System.out.println("File already exist");
+			}
+		}
+		catch(FileNotFoundException e) {
+			System.out.println("Could not locate file location");
+		}
+		catch(IOException e) {
+			System.out.println("Could not write file");
+		}
+	}
+	
+	static void writeToExistFile(Scanner scnr, ArrayList<Task> tasks) {
+		scnr.nextLine(); //consume new line
+		String directory = "D:\\Eclipse Workspace\\Projects2025";
+		System.out.print("Enter name of pre-existing file with extension (E.g, .txt): ");
+		String filePath = scnr.nextLine();
+		
+		try {
+			File myFile = new File(directory, filePath);
+			if(myFile.exists()) {
+				System.out.println("File found " + myFile.getAbsolutePath());
+				FileWriter writer = new FileWriter(myFile); //initialize writer for specified filePath
+				for(int i = 0; i < tasks.size(); i++) {
+					Task t = tasks.get(i); //loop to write every task in new line
+					writer.write((i + 1) + ": " + t.getName() + " - " + t.getDescription() + 
+									  " - " + (t.isDone()) + "\n");					  
+			}
+				
+			writer.close(); //close after writing to file
+			System.out.println("Data written to " + filePath);	
+			}
+			else {
+				System.out.println("File not found");
+			}				
+		} 
+		catch(FileNotFoundException e) {
+			System.out.println("Could not locate fikle");
+		} 
+		catch(IOException e) {
+			System.out.println("Could not write file");
+		}
+	}
 	
 	
 }
