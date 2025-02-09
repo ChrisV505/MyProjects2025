@@ -80,6 +80,9 @@ public class ToDoListApp {
 			catch(NoSuchElementException e) {
 				System.out.println("No input found.");
 			}
+			catch(IndexOutOfBoundsException e) {
+				System.out.println("Task doesn't exist. Try again");
+			}
 		}
 	}
 	
@@ -106,7 +109,7 @@ public class ToDoListApp {
 	
 	static void fileChoice(int menuChoice, Scanner scnr, ArrayList<Task> tasks) {
 		switch(menuChoice) {
-			case 1 -> System.out.println("Save to existing file");
+			case 1 -> writeToExistFile(scnr, tasks);
 			case 2 -> writeToNewFile(scnr, tasks);
 			case 3 -> {
 				break;
@@ -133,7 +136,7 @@ public class ToDoListApp {
 				for(int i = 0; i < tasks.size(); i++) {
 						Task t = tasks.get(i); //loop to write every task in new line
 						writer.write((i + 1) + ": " + t.getName() + " - " + t.getDescription() + 
-										  " - " + (t.isDone()) + "\n");					  
+										  " - " + (t.isDone() ? "Done" : "Not Done") + "\n");					  
 				}
 				
 				writer.close(); //close after writing to file
@@ -165,7 +168,7 @@ public class ToDoListApp {
 				for(int i = 0; i < tasks.size(); i++) {
 					Task t = tasks.get(i); //loop to write every task in new line
 					writer.write((i + 1) + ": " + t.getName() + " - " + t.getDescription() + 
-									  " - " + (t.isDone()) + "\n");					  
+									  " - " + (t.isDone() ? "Done" : "Not Done") + "\n");					  
 			}
 				
 			writer.close(); //close after writing to file
