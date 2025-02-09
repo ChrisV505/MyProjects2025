@@ -18,71 +18,7 @@ public class ToDoListApp {
 		System.out.println("--- Welcome to ToDoListApp ---");
 		while(true) {
 			taskMenu();
-			try {
-				int taskMenuChoice = scnr.nextInt();
-				scnr.nextLine(); //consume new line
-				switch(taskMenuChoice) {
-					case 1 -> {
-						System.out.print("Enter new task name: ");
-						String taskName = scnr.nextLine();
-						System.out.print("Enter description for task: ");
-						String description = scnr.nextLine();
-						Task t = new Task(taskName, description);
-						tasks.add(t);
-					}
-					case 2 -> {
-						System.out.print("Enter name of task to remove: ");
-						String removeName = scnr.nextLine();
-						tasks.removeIf(t -> t.getName().equalsIgnoreCase(removeName)); //delete task obj when match is found
-						System.out.println("Task removed");
-					}
-					case 3 -> {
-						if(tasks.isEmpty()) {
-							System.out.println("No tasks have been added");
-						}else {
-							for(int i = 0; i < tasks.size(); i++) {
-								Task t = tasks.get(i);
-								System.out.println((i + 1) + ": " + t.getName() + " - " + t.getDescription() + 
-												  " - " + (t.isDone() ? "Done" : "Not Done"));					  
-							}	
-						}	
-					}
-					case 4 -> {
-						System.out.print("Enter number of task to mark as done: ");
-						int taskNum = scnr.nextInt() - 1;
-						if(taskNum <= tasks.size() && taskNum >= 0) {
-							Task t = tasks.get(taskNum);
-							t.setDone(true); // set task as done
-							System.out.println("Task marked as done");
-						}else {
-							System.out.println("Invalid task number");
-						}
-						
-					}
-						
-					case 5 -> {
-						fileMenu();
-						int fileMenuChoice = scnr.nextInt();
-						fileChoice(fileMenuChoice, scnr, tasks);
-					}
-					case 6 -> {
-						System.out.println("exiting program...");
-						scnr.close();
-						System.exit(0);
-					}
-					default -> System.out.println("invalid input. Enter a valid choice");
-				}	
-			}
-			catch(InputMismatchException e) {
-				System.out.println("Invalid input. Please enter a number");
-				scnr.nextLine(); //consume invalid input
-			} 
-			catch(NoSuchElementException e) {
-				System.out.println("No input found.");
-			}
-			catch(IndexOutOfBoundsException e) {
-				System.out.println("Task doesn't exist. Try again");
-			}
+			handleTaskChoice(scnr, tasks);
 		}
 	}
 	
@@ -107,13 +43,13 @@ public class ToDoListApp {
 		System.out.print("Enter your choice: ");
 	}
 	
-	static void fileChoice(int menuChoice, Scanner scnr, ArrayList<Task> tasks) {
+	static void handleFileChoice(int menuChoice, Scanner scnr, ArrayList<Task> tasks) {
 		switch(menuChoice) {
 			case 1 -> writeToExistFile(scnr, tasks);
 			case 2 -> writeToNewFile(scnr, tasks);
 			case 3 -> {
 			}
-			default -> System.out.println("invalid input. Enter number (1 - 6)"); 
+			default -> System.out.println("invalid input. Enter number (1 - 3)"); 
 		}
 	}
 	
@@ -184,4 +120,80 @@ public class ToDoListApp {
 			System.out.println("Could not write file");
 		}
 	}
+	
+	static void handleTaskChoice(Scanner scnr, ArrayList<Task> tasks) {
+		try {
+			int taskMenuChoice = scnr.nextInt();
+			scnr.nextLine(); //consume new line
+			
+			switch(taskMenuChoice) {
+				case 1 -> addTask(scnr, tasks);
+				case 2 -> removeTask(scnr, tasks);
+				case 3 -> listAllTask(scnr, tasks);
+				case 4 -> markTaskDone(scnr, tasks);
+				case 5 -> {
+					fileMenu();
+					int fileMenuChoice = scnr.nextInt();
+					handleFileChoice(fileMenuChoice, scnr, tasks);
+				}
+				case 6 -> {
+					System.out.println("exiting program...");
+					scnr.close();
+					System.exit(0);
+				}
+				default -> System.out.println("invalid input. Enter a valid choice");
+			}	
+		}
+		catch(InputMismatchException e) {
+			System.out.println("Invalid input. Please enter a number");
+			scnr.nextLine(); //consume invalid input
+		} 
+		catch(NoSuchElementException e) {
+			System.out.println("No input found.");
+		}
+		catch(IndexOutOfBoundsException e) {
+			System.out.println("Task doesn't exist. Try again");
+		}	
+	}
+	
+	static void addTask(Scanner scnr, ArrayList<Task> tasks) {
+		System.out.print("Enter new task name: ");
+		String taskName = scnr.nextLine();
+		System.out.print("Enter description for task: ");
+		String description = scnr.nextLine();
+		Task t = new Task(taskName, description);
+		tasks.add(t);	
+	}
+	
+	static void removeTask(Scanner scnr, ArrayList<Task> tasks) {
+		System.out.print("Enter name of task to remove: ");
+		String removeName = scnr.nextLine();
+		tasks.removeIf(t -> t.getName().equalsIgnoreCase(removeName)); //delete task obj when match is found
+		System.out.println("Task removed");	
+	}
+	
+	static void listAllTask(Scanner scnr, ArrayList<Task> tasks) {
+		if(tasks.isEmpty()) {
+			System.out.println("No tasks have been added");
+		}else {
+			for(int i = 0; i < tasks.size(); i++) {
+				Task t = tasks.get(i);
+				System.out.println((i + 1) + ": " + t.getName() + " - " + t.getDescription() + 
+								  " - " + (t.isDone() ? "Done" : "Not Done"));					  
+			}	
+		}	
+	}
+	
+	static void markTaskDone(Scanner scnr, ArrayList<Task> tasks) {
+		System.out.print("Enter number of task to mark as done: ");
+		int taskNum = scnr.nextInt() - 1;
+		if(taskNum <= tasks.size() && taskNum >= 0) {
+			Task t = tasks.get(taskNum);
+			t.setDone(true); // set task as done
+			System.out.println("Task marked as done");
+		}else {
+			System.out.println("Invalid task number");
+		}	
+	}
+	
 }
