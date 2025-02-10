@@ -48,7 +48,7 @@ public class ToDoListApp {
 	
 	static void handleFileChoice(int menuChoice, Scanner scnr, ArrayList<Task> tasks) {
 		switch(menuChoice) {
-			case 1 -> writeToExistFile(scnr, tasks);
+			case 1 -> writeToExistingFile(scnr, tasks);
 			case 2 -> writeToNewFile(scnr, tasks);
 			case 3 -> startFromFile(scnr, tasks);
 			case 4 -> {
@@ -74,8 +74,9 @@ public class ToDoListApp {
 				FileWriter writer = new FileWriter(myFile); //initialize writer for specified filePath
 				for(int i = 0; i < tasks.size(); i++) {
 						Task t = tasks.get(i); //loop to write every task in new line
-						writer.write((i + 1) + ". " + t.getName() + " - " + t.getDescription() + 
-										  " - " + (t.isDone() ? "Done" : "Not Done") + "\n");					  
+						writer.write((i + 1) + ". " + t.getName() + " - " + 
+								  t.getDescription() +  " - " + 
+								  (t.isDone() ? "Done" : "Not Done" + "\n"));						  
 				}
 				
 				writer.close(); //close after writing to file
@@ -93,7 +94,7 @@ public class ToDoListApp {
 		}
 	}
 	
-	static void writeToExistFile(Scanner scnr, ArrayList<Task> tasks) {
+	static void writeToExistingFile(Scanner scnr, ArrayList<Task> tasks) {
 		scnr.nextLine(); //consume new line
 		String directory = "C:\\Users\\chris\\Desktop\\TodoListSunday";
 		System.out.print("Enter name of pre-existing file with extension (E.g, .txt): ");
@@ -106,8 +107,9 @@ public class ToDoListApp {
 				FileWriter writer = new FileWriter(myFile); //initialize writer for specified filePath
 				for(int i = 0; i < tasks.size(); i++) {
 					Task t = tasks.get(i); //loop to write every task in new line
-					writer.write((i + 1) + ". " + t.getName() + " - " + t.getDescription() + 
-									  " - " + (t.isDone() ? "Done" : "Not Done") + "\n");					  
+					writer.write((i + 1) + ". " + t.getName() + " - " + 
+							  t.getDescription() +  " - " + 
+							  (t.isDone() ? "Done" : "Not Done" + "\n"));						  
 			}
 				
 			writer.close(); //close after writing to file
@@ -143,21 +145,25 @@ public class ToDoListApp {
 	}
 	
 	static void saveFileData(ArrayList<Task> tasks, String line) {
-		String taskName = null;
-		String descrip = null;
-		String isDone = null;
+
 
 		line = line.substring(3); //making line start from first argument
 		String[] lineCont = line.split(" - ");
-		for(int i = 0; i < 3; i++) { //only 3 arguments per line, so hard coded 3 into loop
-			switch(i) {
-				case 0 -> taskName = lineCont[i];
-				case 1 -> descrip = lineCont[i];
-				case 2 -> isDone = lineCont[i];
-			}
+		
+		//check if line format correct
+		if(lineCont.length < 3) {
+			System.out.println("Invalid line format " + line);
+			return;
 		}
+		
+		//assign array values to variables
+		String taskName = lineCont[0].trim();
+		String descrip = lineCont[1].trim();
+		String isDone = lineCont[2].trim();
+		
+		//create task obj and add to array
 		Task t = new Task(taskName, descrip);
-		t.setDone(isDone.equalsIgnoreCase("done") ? true : false);
+		t.setDone(isDone.equalsIgnoreCase("done"));
 		tasks.add(t);
 	}
 	
@@ -169,7 +175,7 @@ public class ToDoListApp {
 			switch(taskMenuChoice) {
 				case 1 -> addTask(scnr, tasks);
 				case 2 -> removeTask(scnr, tasks);
-				case 3 -> listAllTask(scnr, tasks);
+				case 3 -> listAllTasks(scnr, tasks);
 				case 4 -> markTaskDone(scnr, tasks);
 				case 5 -> {
 					fileMenu();
@@ -181,7 +187,6 @@ public class ToDoListApp {
 					scnr.close();
 					System.exit(0);
 				}
-				default -> System.out.println("invalid input. Enter a valid choice");
 			}	
 		}
 		catch(InputMismatchException e) {
@@ -212,14 +217,15 @@ public class ToDoListApp {
 		System.out.println("Task removed");	
 	}
 	
-	static void listAllTask(Scanner scnr, ArrayList<Task> tasks) {
+	static void listAllTasks(Scanner scnr, ArrayList<Task> tasks) {
 		if(tasks.isEmpty()) {
 			System.out.println("No tasks have been added");
 		}else {
 			for(int i = 0; i < tasks.size(); i++) {
 				Task t = tasks.get(i);
-				System.out.println((i + 1) + ". " + t.getName() + " - " + t.getDescription() + 
-								  " - " + (t.isDone() ? "Done" : "Not Done"));					  
+				System.out.println((i + 1) + ". " + t.getName() + " - " + 
+								  t.getDescription() +  " - " + 
+								  (t.isDone() ? "Done" : "Not Done"));					  
 			}	
 		}	
 	}
@@ -227,7 +233,7 @@ public class ToDoListApp {
 	static void markTaskDone(Scanner scnr, ArrayList<Task> tasks) {
 		System.out.print("Enter number of task to mark as done: ");
 		int taskNum = scnr.nextInt() - 1;
-		if(taskNum <= tasks.size() && taskNum >= 0) {
+		if(taskNum < tasks.size() && taskNum >= 0) {
 			Task t = tasks.get(taskNum);
 			t.setDone(true); // set task as done
 			System.out.println("Task marked as done");
