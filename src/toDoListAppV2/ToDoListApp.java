@@ -74,7 +74,7 @@ public class ToDoListApp {
 				FileWriter writer = new FileWriter(myFile); //initialize writer for specified filePath
 				for(int i = 0; i < tasks.size(); i++) {
 						Task t = tasks.get(i); //loop to write every task in new line
-						writer.write((i + 1) + ": " + t.getName() + " - " + t.getDescription() + 
+						writer.write((i + 1) + ". " + t.getName() + " - " + t.getDescription() + 
 										  " - " + (t.isDone() ? "Done" : "Not Done") + "\n");					  
 				}
 				
@@ -106,7 +106,7 @@ public class ToDoListApp {
 				FileWriter writer = new FileWriter(myFile); //initialize writer for specified filePath
 				for(int i = 0; i < tasks.size(); i++) {
 					Task t = tasks.get(i); //loop to write every task in new line
-					writer.write((i + 1) + ": " + t.getName() + " - " + t.getDescription() + 
+					writer.write((i + 1) + ". " + t.getName() + " - " + t.getDescription() + 
 									  " - " + (t.isDone() ? "Done" : "Not Done") + "\n");					  
 			}
 				
@@ -131,23 +131,35 @@ public class ToDoListApp {
 		try(BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
 			String line;
 			while((line = reader.readLine()) != null) {
-				line = line.substring(3);
-				String[] lineCont = line.split(" - ");
-				for(int i = 0; i < 3; i++) {
-					System.out.print(lineCont[i]);
-				}
-			}	
+				saveFileData(tasks, line);
+			}
+			System.out.println("Data copied successfully");
+			
 		}catch(FileNotFoundException e) {
 			System.out.println("Could not locate file");
 		}catch(IOException e) {
 			System.out.println("Something went wrong");
-		}	
+		}
 	}
 	
-	static void saveFileData(Scanner scnr, ArrayList<Task> tasks) {
-		
+	static void saveFileData(ArrayList<Task> tasks, String line) {
+		String taskName = null;
+		String descrip = null;
+		String isDone = null;
+
+		line = line.substring(3); //making line start from first argument
+		String[] lineCont = line.split(" - ");
+		for(int i = 0; i < 3; i++) { //only 3 arguments per line, so hard coded 3 into loop
+			switch(i) {
+				case 0 -> taskName = lineCont[i];
+				case 1 -> descrip = lineCont[i];
+				case 2 -> isDone = lineCont[i];
+			}
+		}
+		Task t = new Task(taskName, descrip);
+		t.setDone(isDone.equalsIgnoreCase("done") ? true : false);
+		tasks.add(t);
 	}
-	
 	
 	static void handleTaskChoice(Scanner scnr, ArrayList<Task> tasks) {
 		try {
@@ -206,7 +218,7 @@ public class ToDoListApp {
 		}else {
 			for(int i = 0; i < tasks.size(); i++) {
 				Task t = tasks.get(i);
-				System.out.println((i + 1) + ": " + t.getName() + " - " + t.getDescription() + 
+				System.out.println((i + 1) + ". " + t.getName() + " - " + t.getDescription() + 
 								  " - " + (t.isDone() ? "Done" : "Not Done"));					  
 			}	
 		}	
