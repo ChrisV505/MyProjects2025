@@ -1,7 +1,9 @@
 package toDoListAppV2;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,7 +40,8 @@ public class ToDoListApp {
 		System.out.println("-------------------");
 		System.out.println("1. Save to existing file");
 		System.out.println("2. Create and save to new file");
-		System.out.println("3. Go back to task menu");
+		System.out.println("3. Start from file");
+		System.out.println("4. Go back to task menu");
 		System.out.println("-------------------");
 		System.out.print("Enter your choice: ");
 	}
@@ -47,7 +50,8 @@ public class ToDoListApp {
 		switch(menuChoice) {
 			case 1 -> writeToExistFile(scnr, tasks);
 			case 2 -> writeToNewFile(scnr, tasks);
-			case 3 -> {
+			case 3 -> startFromFile(scnr, tasks);
+			case 4 -> {
 			}
 			default -> System.out.println("invalid input. Enter number (1 - 3)"); 
 		}
@@ -91,7 +95,7 @@ public class ToDoListApp {
 	
 	static void writeToExistFile(Scanner scnr, ArrayList<Task> tasks) {
 		scnr.nextLine(); //consume new line
-		String directory = "D:\\Eclipse Workspace\\Projects2025";
+		String directory = "C:\\Users\\chris\\Desktop\\TodoListSunday";
 		System.out.print("Enter name of pre-existing file with extension (E.g, .txt): ");
 		String filePath = scnr.nextLine();
 		
@@ -114,11 +118,30 @@ public class ToDoListApp {
 			}				
 		} 
 		catch(FileNotFoundException e) {
-			System.out.println("Could not locate fikle");
+			System.out.println("Could not locate file");
 		} 
 		catch(IOException e) {
 			System.out.println("Could not write file");
 		}
+	}
+	
+	static void startFromFile(Scanner scnr, ArrayList<Task> tasks) {
+		String filePath = "C:\\Users\\chris\\Desktop\\TodoListSunday\\testingRead.txt";
+		
+		try(BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+			String line;
+			while((line = reader.readLine()) != null) {
+				line = line.substring(3);
+				String[] lineCont = line.split(" - ");
+				for(int i = 0; i < 3; i++) {
+					System.out.println(lineCont[i]);
+				}
+			}	
+		}catch(FileNotFoundException e) {
+			System.out.println("Could not locate file");
+		}catch(IOException e) {
+			System.out.println("Something went wrong");
+		}	
 	}
 	
 	static void handleTaskChoice(Scanner scnr, ArrayList<Task> tasks) {
