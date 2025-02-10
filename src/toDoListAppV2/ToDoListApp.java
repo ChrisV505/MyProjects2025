@@ -134,7 +134,7 @@ public class ToDoListApp {
 				line = line.substring(3);
 				String[] lineCont = line.split(" - ");
 				for(int i = 0; i < 3; i++) {
-					System.out.println(lineCont[i]);
+					System.out.print(lineCont[i]);
 				}
 			}	
 		}catch(FileNotFoundException e) {
@@ -143,6 +143,11 @@ public class ToDoListApp {
 			System.out.println("Something went wrong");
 		}	
 	}
+	
+	static void saveFileData(Scanner scnr, ArrayList<Task> tasks) {
+		
+	}
+	
 	
 	static void handleTaskChoice(Scanner scnr, ArrayList<Task> tasks) {
 		try {
