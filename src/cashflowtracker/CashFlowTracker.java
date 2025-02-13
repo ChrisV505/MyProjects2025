@@ -1,6 +1,7 @@
 package cashflowtracker;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*; //import entire util library
 
@@ -166,7 +167,39 @@ public class CashFlowTracker {
 		return sum;
 	}
 	
-	//method to write to file
+	//write to file method 2
+	static void writeToNewFile(Scanner scnr, ArrayList<Double> monthlyIncomes, String[] months) {
+		System.out.print("Por favor ingrese el nombre para el archivo: ");
+		String fileName = scnr.nextLine().trim();
+		
+		if(!fileName.endsWith(".txt")) {
+			fileName += ".txt";
+		}
+		
+		try {
+			File myFile = new File(fileName);
+			if(myFile.createNewFile()) {
+				System.out.println("Archivo creado en " + myFile.getAbsolutePath());
+				PrintWriter writer = new PrintWriter(myFile);
+				
+				for(int i = 0; i < months.length; i++) {
+					writer.printf(months[i] + ": $%,.2f\n", monthlyIncomes.get(i));
+				}
+				writer.printf("\n%s\n$%,.2f", "Monto Total", annualTotal(monthlyIncomes));
+				
+				writer.close();
+				System.out.println("Datos escritos en " + fileName);
+			}else {
+				System.out.println(fileName + " ya existe");
+			}
+		}catch(FileNotFoundException e) {
+			System.out.println("Archivo no encontrado");
+		} catch (IOException e) {
+			System.out.println("Algo salio mal");
+		}
+	}
+	
+	//write to file method 1
 	static void writeToExistingFile(Scanner scnr, ArrayList<Double> monthlyIncomes, String[] months) {
 		scnr.nextLine(); //consume new line from choice
 		System.out.print("Por favor ingrese el directorio donde esta su archivo: ");
@@ -185,7 +218,7 @@ public class CashFlowTracker {
 				System.out.println("Archivo encontrado " + myFile.getAbsolutePath());
 				PrintWriter writer = new PrintWriter(myFile);
 				
-				for(int i = 0; i < MONTHS_Of_YEAR; i++) {
+				for(int i = 0; i < months.length; i++) {
 					writer.printf(months[i] + ": $%,.2f\n", monthlyIncomes.get(i));
 				}
 				writer.printf("\n%s\n$%,.2f", "Monto Total", annualTotal(monthlyIncomes));
