@@ -1,4 +1,7 @@
 package cashflowtracker;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.*; //import entire util library
 
 public class CashFlowTracker {
@@ -10,47 +13,87 @@ public class CashFlowTracker {
 		//initialize scanner & arrayList
 		Scanner scnr = new Scanner(System.in);
 		ArrayList <Double> monthlyIncomes = new ArrayList<>(Collections.nCopies(MONTHS_Of_YEAR, 0.0));
+		String months[] = {"Enero", "Frebrero", "Marzo", "Abril",
+				   "Mayo", "Junio", "Julio", "Agosto", 
+				   "Semptiembre", "Octubre", "Noviembre", "Diciembre"};
+		
+		System.out.println("¡Bienvenidos a su\n"
+				+ "rastreador de flujo de efectivo!");
 		
 		while(true) {
 		//display menu
-		menu();
+		mainMenu();
+		try {
+			int choice = selection(scnr); //get choice for menu
+			
+			//handles each menu choice
+			switch(choice) {
+				case 1: 
+					addAmount(scnr, monthlyIncomes);
+					break;
+				case 2: 
+					totalIncomePerMonth(monthlyIncomes, months);
+					break;
+				case 3:
+					System.out.printf("Su monto total anual es: $%,.2f\n\n", annualTotal(monthlyIncomes));
+					break;
+				case 4:
+					fileMenu();
+					int response = selection(scnr);
+					switch(response) {
+						case 1 -> writeToExistingFile(scnr, monthlyIncomes, months);
+						case 2 -> {
+							
+						}
+						case 3 -> {
+
+						}
+						case 4 -> {
+							System.out.println("Regresando...");
+							continue;	
+						}
+					}
+					break;
+				case 5:
+					System.out.println("Gracias por usar esta programa, adios");
+					scnr.close();
+					return;
+				default:
+					System.out.println("Numero invalido\n");		
+				}	
+			} catch(InputMismatchException e) {
+				System.out.println("Por favor ingrese un numero valido.");
+				scnr.nextLine(); //clear invalid input from system
+			}
 		
-		//get user choice
-		int choice = selection(scnr);
-		
-		//handles each menu choice
-		switch(choice) {
-			case 1: 
-				addAmount(scnr, monthlyIncomes);
-				break;
-			case 2: 
-				totalIncomePerMonth(monthlyIncomes);
-				break;
-			case 3:
-				System.out.printf("Su monto total anual es: $%,.2f\n\n", annualTotal(monthlyIncomes));
-				break;
-			case 4:
-				System.out.println("Gracias por usar esta programa, adios");
-				scnr.close();
-				return;
-			default:
-				System.out.println("Numero invalido\n");		
-			}		
 		}		
 	}
 	
 	//menu for user
-	public static void menu() {
+	public static void mainMenu() {
+		System.out.println("-----------------------");
 		System.out.println("1: Agregar un monto a un mes" +
 				   "\n2: Ver el monto total de cada mes"+
 				   "\n3: Ver el monto total anual" +
-				   "\n4: Salir del programa");	
+				   "\n4: Ir a menu de archivos" +
+				   "\n5: Salir del programa");	
+		System.out.println("-----------------------");
+	}
+	
+	static void fileMenu() {
+		System.out.println("-----------------------");
+		System.out.println("1: Guardar en archivo existente");
+		System.out.println("2: Crear y guardar en un nuevo archivo");
+		System.out.println("3: Comenzar desde archivo");
+		System.out.println("4: Regresar a menu pricipal");
+		System.out.println("-----------------------");
+		
 	}
 	
 	//Get selection from user
 	public static int selection(Scanner scnr) {
 		//ask & store user choice
-		System.out.print("\nCual es tu seleccion: ");
+		System.out.print("Cual es tu seleccion: ");
 		int choice = scnr.nextInt();
 		
 		//return choice
@@ -83,15 +126,12 @@ public class CashFlowTracker {
 		totalAmount = convertStringToDouble(userNums); //call converter method
 		currentIncome = monthlyIncomes.get(month); //get current amount from user month
 		monthlyIncomes.set(month, currentIncome + totalAmount); //add amount to arraylist
-		System.out.println("Cantidad agregada exitosamente\n"); //confirmation to user
+		System.out.println("Cantidad/es agregada exitosamente"); //confirmation to user
 	}
 	
 	//handles displaying total income per month to user
-	public static void totalIncomePerMonth(ArrayList<Double> monthlyIncomes) {
-		String months[] = {"Enero", "Frebrero", "Marzo", "Abril",
-						   "Mayo", "Junio", "Julio", "Agosto", 
-						   "Semptiembre", "Octubre", "Noviembre", "Diciembre"};
-		
+	public static void totalIncomePerMonth(ArrayList<Double> monthlyIncomes, String[] months) {
+
 		//loop to display total amount per month
 		for(int i = 0; i < months.length; i++) {
 			System.out.printf(months[i] + ": $%,.2f\n", monthlyIncomes.get(i));
@@ -124,5 +164,41 @@ public class CashFlowTracker {
 		}
 		//return total amount
 		return sum;
+	}
+	
+	//method to write to file
+	static void writeToExistingFile(Scanner scnr, ArrayList<Double> monthlyIncomes, String[] months) {
+		scnr.nextLine(); //consume new line from choice
+		System.out.print("Por favor ingrese el directorio donde esta su archivo: ");
+		String directory = scnr.nextLine().trim();
+		directory = directory.replace("\"", "\\");
+		System.out.print("Por favor ingrese el nombre de su archivo con extension (Ej. .txt): ");
+		String fileName = scnr.nextLine().trim();
+			
+		if(!fileName.endsWith(".txt")) {
+			fileName += ".txt";
+		}
+
+		try {
+			File myFile = new File(directory, fileName);
+			if(myFile.exists()) {
+				System.out.println("Archivo encontrado " + myFile.getAbsolutePath());
+				PrintWriter writer = new PrintWriter(myFile);
+				
+				for(int i = 0; i < MONTHS_Of_YEAR; i++) {
+					writer.printf(months[i] + ": $%,.2f\n", monthlyIncomes.get(i));
+				}
+				writer.printf("\n%s\n$%,.2f", "Monto Total", annualTotal(monthlyIncomes));
+				
+				writer.close();
+				System.out.println("Datos escritos en " + fileName);
+			}
+			else { 
+				System.out.println("Archivo no encontrado");
+			}
+		}
+		catch(FileNotFoundException e) {
+			System.out.println("Archivo no a sido encontrado");
+		}
 	}
 }
