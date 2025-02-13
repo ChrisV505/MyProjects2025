@@ -145,8 +145,6 @@ public class ToDoListApp {
 	}
 	
 	static void saveFileData(ArrayList<Task> tasks, String line) {
-
-
 		line = line.substring(3); //making line start from first argument
 		String[] lineCont = line.split(" - ");
 		

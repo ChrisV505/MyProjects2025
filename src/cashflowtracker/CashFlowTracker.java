@@ -1,6 +1,8 @@
 package cashflowtracker;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*; //import entire util library
@@ -36,19 +38,15 @@ public class CashFlowTracker {
 					totalIncomePerMonth(monthlyIncomes, months);
 					break;
 				case 3:
-					System.out.printf("Su monto total anual es: $%,.2f\n\n", annualTotal(monthlyIncomes));
+					System.out.printf("Su monto total anual es: $%,.2f\n", annualTotal(monthlyIncomes));
 					break;
 				case 4:
 					fileMenu();
 					int response = selection(scnr);
 					switch(response) {
 						case 1 -> writeToExistingFile(scnr, monthlyIncomes, months);
-						case 2 -> {
-							
-						}
-						case 3 -> {
-
-						}
+						case 2 -> writeToNewFile(scnr, monthlyIncomes, months);
+						case 3 -> readFile(scnr, monthlyIncomes);
 						case 4 -> {
 							System.out.println("Regresando...");
 							continue;	
@@ -60,7 +58,8 @@ public class CashFlowTracker {
 					scnr.close();
 					return;
 				default:
-					System.out.println("Numero invalido\n");		
+					System.out.println("Numero invalido");
+					break;
 				}	
 			} catch(InputMismatchException e) {
 				System.out.println("Por favor ingrese un numero valido.");
@@ -109,7 +108,7 @@ public class CashFlowTracker {
 		Double totalAmount = 0.0;
 		
 		//ask user for month
-		System.out.print("Por favor ingrese un mes(1- 12): ");
+		System.out.print("Por favor ingrese un mes(1 - 12): ");
 		int month = scnr.nextInt() - 1;
 		scnr.nextLine(); // consumes leftover newline
 		
@@ -167,8 +166,45 @@ public class CashFlowTracker {
 		return sum;
 	}
 	
-	//write to file method 2
+	//read files
+	static void readFile(Scanner scnr, ArrayList<Double> monthlyIncomes) {
+		scnr.nextLine(); //consume new line still in the system 
+		System.out.print("Por favor ingrese el directorio de su archivo: ");
+		String filePath = scnr.nextLine().trim();
+		filePath = filePath.replace("\"", "\\");
+		
+		try(BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+			String line;
+			int i = 0;
+			while((line = reader.readLine()) != null) {
+				if(i < 12) {
+					storeData(line, monthlyIncomes, i);
+				}else {
+					break;
+				}
+				i++;
+			}
+			System.out.println("Datos copiados exitosamente");
+			
+		}catch(FileNotFoundException e) {
+			 System.out.println("Archivo no encontrado");
+		} catch (IOException e1) {
+			System.out.println("Algo salio mal");
+		} 
+	}
+	
+	//stores data from file to arrayList
+	static void	storeData(String line, ArrayList<Double> monthlyIncomes, int i) {
+		int startReading = (line.indexOf("$") + 1); //find index of $ plus 1 to start reading amounts in file
+		line = line.substring(startReading).replace(",", "");
+		double incomeAmount = Double.parseDouble(line);
+		
+		monthlyIncomes.set(i, incomeAmount);
+	}
+	
+	//write to new file
 	static void writeToNewFile(Scanner scnr, ArrayList<Double> monthlyIncomes, String[] months) {
+		scnr.nextLine(); //consume new line in system
 		System.out.print("Por favor ingrese el nombre para el archivo: ");
 		String fileName = scnr.nextLine().trim();
 		
@@ -199,7 +235,7 @@ public class CashFlowTracker {
 		}
 	}
 	
-	//write to file method 1
+	//write to existing file
 	static void writeToExistingFile(Scanner scnr, ArrayList<Double> monthlyIncomes, String[] months) {
 		scnr.nextLine(); //consume new line from choice
 		System.out.print("Por favor ingrese el directorio donde esta su archivo: ");
