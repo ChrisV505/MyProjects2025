@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.util.*; //import entire util library
 
 public class CashFlowTracker {
-
+	
 	//initialize global variable
 	final static int MONTHS_Of_YEAR = 12;
 	
