@@ -63,48 +63,65 @@ public class WeatherApp {
 			System.out.println("Your current location: " + location);
 			fetchAndDisplayWeather(location);
 		}
-		
-		
 	}
 	
 	private static void fetchAndDisplayWeather(String location) {
 		try {
 			String weatherData = fetchWeatherData(location);
 			displayWeather(weatherData);
-		}catch(IOExecption e) {
+		}catch(IOException e) {
 			handleNetworkError("Error fetching weather data", e);	
 		}
 	}
 	
-	private static String fetchWeatherData(String location) {
+	private static String fetchWeatherData(String location) throws IOException {
 		String encodedLocation = encodeURL(location);
 		String urlString = WEATHER_API + encodedLocation + WEATHER_FORMAT;
+		System.out.println(urlString);
 		
-		return "";
+		return fetchData(urlString);
 	}
 	
 	private static String encodeURL(String str) {
+		StringBuilder result = new StringBuilder();
 		
+		for(char c : str.toCharArray()) {
+			if(Character.isLetterOrDigit(c) || c == '-' || c == '_' || c == '.' || c == '~') {
+				result.append(c);
+			}else {
+				result.append(String.format("%%%02X", (int) c));
+			}
+		}
+		
+		return result.toString();
 	}
 	
-	private static void displayWeather() {
-		
+	private static void displayWeather(String weatherData) {
+		System.out.println("\nWeather Information: ");
+		System.out.println(weatherData + "\n");
 	}
 	
-	private static void handleNetworkError() {
+	private static void handleNetworkError(String message, Exception e) {
+		System.out.println(message + ": " + e.getMessage());
+		
+		if(e.getCause() instanceof UnknownHostException) {
+			System.out.println("Please check your internet connection and try again");
+		}
 		
 	}
 	
 	private static String getCurrentLocation() {
 		try {
 			String jsonResponse = fetchData(IP_GEOLOCATION_API);
-			String[] parts = jsonResponse.split("\"city\":\"");
+			String[] parts = jsonResponse.split("\"city\":\""); //splits jsonReponse by the city and first quote in los angeles
 			
 			if(parts.length > 1) {
-				return parts[1].split("\"")[0];
+
+				return parts[1].split("\"")[0]; //[1] gets index in array startin with Los Angeles, then splits it by single quote
+												//[0] gets the first element of the array after spliting by single quotes
 			}
 		}catch(IOException e) {
-			System.out.println("Errrr testing");
+			handleNetworkError("Error determining location", e);
 		}
 		
 		return null;
@@ -121,6 +138,8 @@ public class WeatherApp {
 				String line;
 				while((line = reader.readLine()) != null) {
 					response.append(line).append("\n");
+					System.out.println(line);
+					System.out.println(response);
 				}
 			}
 			
