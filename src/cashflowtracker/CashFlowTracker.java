@@ -241,15 +241,15 @@ public class CashFlowTracker {
 		System.out.print("Por favor ingrese el directorio donde esta su archivo: ");
 		String directory = scnr.nextLine().trim();
 		directory = directory.replace("\"", "\\");
-		System.out.print("Por favor ingrese el nombre de su archivo con extension (Ej. .txt): ");
-		String fileName = scnr.nextLine().trim();
-			
-		if(!fileName.endsWith(".txt")) {
-			fileName += ".txt";
-		}
+//		System.out.print("Por favor ingrese el nombre de su archivo con extension (Ej, .txt): ");
+//		String fileName = scnr.nextLine().trim();
+//			
+//		if(!fileName.endsWith(".txt")) {
+//			fileName += ".txt";
+//		}
 
 		try {
-			File myFile = new File(directory, fileName);
+			File myFile = new File(directory);
 			if(myFile.exists()) {
 				System.out.println("Archivo encontrado " + myFile.getAbsolutePath());
 				PrintWriter writer = new PrintWriter(myFile);
@@ -260,7 +260,7 @@ public class CashFlowTracker {
 				writer.printf("\n%s\n$%,.2f", "Monto Total", annualTotal(monthlyIncomes));
 				
 				writer.close();
-				System.out.println("Datos escritos en " + fileName);
+				System.out.println("Datos escritos en " + directory);
 			}
 			else { 
 				System.out.println("Archivo no encontrado");
