@@ -57,11 +57,50 @@ public class WeatherApp {
 	private static void handleCurrectLocation() {
 		System.out.println("Fetching currect location...");
 		
-		String location = getCurrentLocation();
+		String location = getCurrentLocation(); //return city name from GEOLOCATION API
 		
-		if(nonNull(location) && !location.isEmpty()) {
-			System.out.println("Your current location: " + location);
-			fetchAndDisplayWeather(location);
+		if(nonNull(location) && !location.isEmpty()) { //nonNull checks if location is not null && checks if location empty
+			System.out.println("Your current location: " + location); //display city name to user
+			fetchAndDisplayWeather(location); //
+		}
+	}
+	
+	private static String getCurrentLocation() {
+		try {
+			String jsonResponse = fetchData(IP_GEOLOCATION_API);
+			String[] parts = jsonResponse.split("\"city\":\""); //splits jsonReponse by the city and first quote in los angeles
+			
+			if(parts.length > 1) {
+
+				return parts[1].split("\"")[0]; //[1] gets index in array startin with Los Angeles, then splits it by single quote
+												//[0] gets the first element of the array after spliting by single quotes
+			}
+		}catch(IOException e) {
+			handleNetworkError("Error determining location", e);
+		}
+		
+		return null;
+	}
+	
+	private static String fetchData(String urlString) throws IOException {
+		try {
+			URL url = URI.create(urlString).toURL(); //initializes URL obj with argument passed
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //checks connection to API
+			connection.setRequestMethod("GET");
+			
+			StringBuilder response = new StringBuilder();
+			try(BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+				String line;
+				while((line = reader.readLine()) != null) {
+					response.append(line).append("\n");
+					System.out.println(line);
+					System.out.println(response);
+				}
+			}
+			
+			return response.toString().trim();
+		}catch(UnknownHostException  e) {
+			throw new IOException("Network is not connected. Please check your internet connection.", e);
 		}
 	}
 	
@@ -107,47 +146,5 @@ public class WeatherApp {
 		if(e.getCause() instanceof UnknownHostException) {
 			System.out.println("Please check your internet connection and try again");
 		}
-		
 	}
-	
-	private static String getCurrentLocation() {
-		try {
-			String jsonResponse = fetchData(IP_GEOLOCATION_API);
-			String[] parts = jsonResponse.split("\"city\":\""); //splits jsonReponse by the city and first quote in los angeles
-			
-			if(parts.length > 1) {
-
-				return parts[1].split("\"")[0]; //[1] gets index in array startin with Los Angeles, then splits it by single quote
-												//[0] gets the first element of the array after spliting by single quotes
-			}
-		}catch(IOException e) {
-			handleNetworkError("Error determining location", e);
-		}
-		
-		return null;
-	}
-	
-	private static String fetchData(String urlString) throws IOException {
-		try {
-			URL url = URI.create(urlString).toURL();
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			connection.setRequestMethod("GET");
-			
-			StringBuilder response = new StringBuilder();
-			try(BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-				String line;
-				while((line = reader.readLine()) != null) {
-					response.append(line).append("\n");
-					System.out.println(line);
-					System.out.println(response);
-				}
-			}
-			
-			return response.toString().trim();
-		}catch(UnknownHostException  e) {
-			throw new IOException("Network is not connected. Please check your internet connection.", e);
-		}
-	}
-	
-	
 }
